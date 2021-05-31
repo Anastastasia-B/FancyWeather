@@ -1,0 +1,21 @@
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+body{
+	font-family: 'Quicksand', sans-serif;
+	color: white;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	color: white;
+	background-size: cover;
+	background-position: center center;
+	background-image: url("../img/temp_backgrownd.jpg");
+	background-repeat: no-repeat;
+}
+
+.wrapper{
+	max-width: 95%;
+}
