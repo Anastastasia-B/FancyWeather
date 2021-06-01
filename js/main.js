@@ -1,30 +1,31 @@
-const time = document.querySelector('.time');
-const date = document.querySelector('.date');
+const time = document.getElementById('time');
+const date = document.getElementById('date');
 const body = document.querySelector('body');
-const temperature = document.querySelector('.temperature');
-const feelslike = document.querySelector('.feelslike');
-const windspeed = document.querySelector('.windspeed');
-const humidity = document.querySelector('.humidity');
-const firstDay = document.querySelector('.firstDay');
-const secondDay = document.querySelector('.secondDay');
-const thirdDay = document.querySelector('.thirdDay');
-const firstDayTmp = document.querySelector('.firstDayTmp');
-const secondDayTmp = document.querySelector('.secondDayTmp');
-const thirdDayTmp = document.querySelector('.thirdDayTmp');
+const temperature = document.getElementById('temperature');
+const feelslike = document.getElementById('feelslike');
+const windspeed = document.getElementById('windspeed');
+const humidity = document.getElementById('humidity');
+const firstDay = document.getElementById('firstDay');
+const secondDay = document.getElementById('secondDay');
+const thirdDay = document.getElementById('thirdDay');
+const firstDayTmp = document.getElementById('firstDayTmp');
+const secondDayTmp = document.getElementById('secondDayTmp');
+const thirdDayTmp = document.getElementById('thirdDayTmp');
 const btn = document.getElementById('repeatBtn');
-const geolocationdiv = document.querySelector('.geolocationdiv');
+const locationdiv = document.getElementById('locationdiv');
 const fahrenheitbtn = document.getElementById('fahrenheit');
 const celsiusbtn = document.getElementById('celsius');
-const latitude = document.querySelector('.latitude');
-const longtitude = document.querySelector('.longtitude');
-const weatherIcon = document.querySelector('.weather-icon');
-const firstDayIcon = document.querySelector('.firstDayIcon');
-const secondDayIcon = document.querySelector('.secondDayIcon');
-const thirdDayIcon = document.querySelector('.thirdDayIcon');
+const latitude = document.getElementById('latitude');
+const longtitude = document.getElementById('longtitude');
+const forecastEl = document.getElementsByClassName("forecast"); 
+const weatherIcon = document.getElementById('weathericon');
+const firstDayIcon = document.getElementById('firstDayIcon');
+const secondDayIcon = document.getElementById('secondDayIcon');
+const thirdDayIcon = document.getElementById('thirdDayIcon');
 const ru = document.getElementById('ru');
 const en = document.getElementById('en');
-const weathertype=document.querySelector('.weathertype');
-const search=document.querySelector('.search');
+const weathertype=document.getElementById('weathertype');
+const search=document.getElementById('search');
 const cityInput=document.getElementById('city');
 var weekdayShort=new Array(7);
 var weekdayFullName=new Array(7);
@@ -146,7 +147,6 @@ let flag=false;
 function fetchForecast (typeTmp,lat,lon) {
  var url =
  `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=current,hourly,minutely,alerts&units=${typeTmp}&appid=08f2a575dda978b9c539199e54df03b0`;
- var forecastEl = document.getElementsByClassName("forecast"); 
  fetch(url)
  .then(function (response) {
   if (200 !== response.status) {
@@ -302,7 +302,7 @@ async function getWeather(typeTmp,language,city) {
       fetchForecast (typeTmp,String(data.coord.lat),String(data.coord.lon)) ;
       getWeather(typeTmp,getLangFromLS(),city);
     }catch(error){
-    alert("No such city found: " + error.message);
+    alert("City not found");
   }
   
 }
@@ -444,31 +444,31 @@ function changeTmptoCelsius(){
     // console.log(data.results.bounds);
     if(lang=='ru'){
       if(data.results[0].components.city!=undefined){
-        geolocationdiv.textContent=data.results[0].components.city + ", " + data.results[0].components.country;
+        locationdiv.textContent=data.results[0].components.city + ", " + data.results[0].components.country;
         localStorage.setItem('city',data.results[0].components.city);
       }else if (data.results[0].components.village!=undefined){
-        geolocationdiv.textContent=data.results[0].components.village + ", " + data.results[0].components.country;
+        locationdiv.textContent=data.results[0].components.village + ", " + data.results[0].components.country;
         localStorage.setItem('city',data.results[0].components.village);
       }else if (data.results[0].components.town!=undefined){
-        geolocationdiv.textContent=data.results[0].components.town + ", " + data.results[0].components.country;
+        locationdiv.textContent=data.results[0].components.town + ", " + data.results[0].components.country;
         localStorage.setItem('city',data.results[0].components.town);
       }else if (data.results[0].components.hamlet!=undefined){
-        geolocationdiv.textContent=data.results[0].components.hamlet + ", " + data.results[0].components.country;
+        locationdiv.textContent=data.results[0].components.hamlet + ", " + data.results[0].components.country;
         localStorage.setItem('city',data.results[0].components.hamlet);
       }
     }
     if(lang=='en'&&flagfirst==true){
       if(data.results[0].components.city!=undefined){
-        geolocationdiv.textContent=data.results[0].components.city + ", " + data.results[0].components.country;
+        locationdiv.textContent=data.results[0].components.city + ", " + data.results[0].components.country;
         localStorage.setItem('city',data.results[0].components.city);
       }else if (data.results[0].components.village!=undefined){
-        geolocationdiv.textContent=data.results[0].components.village + ", " + data.results[0].components.country;
+        locationdiv.textContent=data.results[0].components.village + ", " + data.results[0].components.country;
         localStorage.setItem('city',data.results[0].components.village);
       }else if (data.results[0].components.town!=undefined){
-        geolocationdiv.textContent=data.results[0].components.town + ", " + data.results[0].components.country;
+        locationdiv.textContent=data.results[0].components.town + ", " + data.results[0].components.country;
         localStorage.setItem('city',data.results[0].components.town);
       }else if (data.results[0].components.hamlet!=undefined){
-        geolocationdiv.textContent=data.results[0].components.hamlet + ", " + data.results[0].components.country;
+        locationdiv.textContent=data.results[0].components.hamlet + ", " + data.results[0].components.country;
         localStorage.setItem('city',data.results[0].components.hamlet);
       }
 

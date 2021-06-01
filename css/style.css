@@ -14,8 +14,22 @@ body{
 	background-position: center center;
 	background-image: url("../img/temp_backgrownd.jpg");
 	background-repeat: no-repeat;
+	font-size: 27px;
 }
 
 .wrapper{
-	max-width: 95%;
+	max-width: 90%;
+}
+
+.main_temprature{
+	font-size: 12em;
+	line-height: 1em;
+}
+
+.day_name{
+	font-size: 25px;
+}
+
+.tmp_number{
+	font-size: 2em;
 }
