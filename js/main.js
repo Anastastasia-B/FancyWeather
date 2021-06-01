@@ -32,7 +32,12 @@ var weekdayFullName=new Array(7);
 var months=new Array(12);
 let today=new Date();
 let count=0;
+let langIndex = 0;
+let mydata = null;
 
+async function loadLocalization(){
+  mydata = JSON.parse(localizationData);
+}
 
 function addZero(n) {
   return (parseInt(n, 10) < 10 ? '0' : '') + n;
@@ -128,9 +133,15 @@ function viewBgImage(src) {
 function LoadWeatherIcon(body,src) {  
   const img = new Image();
   img.src = src;
-  img.classList.add('weather_icon');
-  img.onload = () => {      
-    body.appendChild(img);
+  img.className = 'weather_icon';
+  img.onload = () => {   
+    if(body.childElementCount > 0){
+      body.replaceChild(img, body.firstChild); 
+    }
+    else{
+      body.appendChild(img); 
+    }
+    
   }; 
 }
 var tmpType="metric";
@@ -185,19 +196,16 @@ function fetchForecast (typeTmp,lat,lon) {
     }
 
     )
-    if(getLangFromLS()=='en'){
-      latitude.textContent="Latitude: "+Math.floor(lat) + "°"+Math.floor(("0."+FindingDecimalPart(lat))*60)+"'";
-      longtitude.textContent="Longtitude: "+Math.floor(lon) + "°"+Math.floor(("0."+FindingDecimalPart(lon))*60)+"'";
-    }else{
-      latitude.textContent="Широта: "+Math.floor(lat) + "°"+Math.floor(("0."+FindingDecimalPart(lat))*60)+"'";
-      longtitude.textContent="Долгота: "+Math.floor(lon) + "°"+Math.floor(("0."+FindingDecimalPart(lon))*60)+"'";
-    };
+    latitude.textContent=mydata.lat[langIndex] + ": "+Math.floor(lat) + "°"+Math.floor(("0."+FindingDecimalPart(lat))*60)+"'";
+    longtitude.textContent=mydata.long[langIndex] + ": "+Math.floor(lon) + "°"+Math.floor(("0."+FindingDecimalPart(lon))*60)+"'";
   });
 })
  .catch(function (err) {
   console.log("Fetch Error :-S", err);
 });
 };
+
+
 function chooseTmpType(){
   if (localStorage.getItem('tmp') == '°C') {
     celsiusbtn.disabled=true;
@@ -226,15 +234,15 @@ function getTypeTmpFromLS() {
 function getCityFromLS() {
   return(localStorage.getItem('city'));
 }
-function getLang(){
+function setLang(){
   if(localStorage.getItem('lang')==='en'){
-    en.textContent='EN';
-    ru.textContent='RU';
+    langIndex = 0;
   }
   else {
-    en.textContent='АНГЛ';
-    ru.textContent='РУ';
+    langIndex = 1;
   }
+  refreshLang();
+
 }
 function getTmpType(){
   if(getTypeTmpFromLS()=='°C'){
@@ -270,20 +278,11 @@ async function getWeather(typeTmp,language,city) {
     weathertype.textContent=data.weather[0].description;
     temperature.textContent = `${maintmpRound}°`;
     let feelsliketmpRound=Math.round(data.main.feels_like);
-    if(language=="en"){
-      feelslike.textContent="FEELS LIKE: " + feelsliketmpRound + "°";
+    feelslike.textContent=mydata.feelslike[langIndex] + ": " + feelsliketmpRound + "°";
       if(flag4==false){
-        humidity.textContent="HUMIDITY: "+data.main.humidity + "%";
+        humidity.textContent=mydata.humidity[langIndex] + ": "+data.main.humidity + "%";
         flag4=true;
       }
-    }
-    else {
-      feelslike.textContent="Ощущается как: " + feelsliketmpRound + "°";
-      if(flag4==false){
-        humidity.textContent="ВЛАЖНОСТЬ: "+data.main.humidity + "%";
-        flag4=true;
-      }
-    }
   }
   async function getCoord() {
     try {
@@ -311,21 +310,17 @@ function getCord(event) {
     getCoord();
   }
 }
-async function getWindSpeed(language) {
+async function getWindSpeed() {
 
   try{
     let city=getCityFromLS();
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&lang=en&appid=08f2a575dda978b9c539199e54df03b0&units=metric`;
     const res = await fetch(url);
     const data = await res.json();
-    if(language=="en"){
-      windspeed.textContent="WIND: " + data.wind.speed+' m/s';
-    } else {
-      windspeed.textContent="ВЕТЕР: " + data.wind.speed+' м/с';
-    }
+    windspeed.textContent = mydata.wind[langIndex] + ": " + data.wind.speed+' m/s';
   }catch(error){
     getGeolocation();
-    getWindSpeed(getLangFromLS());
+    getWindSpeed();
   }
 }
 function getMap(lat,lng){
@@ -337,38 +332,38 @@ function getMap(lat,lng){
     zoom: 10.2
 });
 }
+
+function refreshLang(){
+  en.textContent= mydata.en[langIndex];
+  ru.textContent= mydata.ru[langIndex];
+  getWindSpeed();
+  search.innerHTML = mydata.search[langIndex];
+  console.log(langIndex);
+  let langStr = langIndex == 0 ? "en" : "ru";
+  if(flagfirst==false){
+      getGeolocation();
+    }
+    else{ getGeocoding(localStorage.getItem('lat'),localStorage.getItem('lng'), langStr);}
+}
+
 let someflag=false;
 function changeLangToRus(){
+  langIndex = 1;
   flag4=false;
   localStorage.setItem('lang', 'ru');
-  en.textContent="АНГЛ";
-  ru.textContent="РУ";
-    // getWeather(tmpType,"ru",getCityFromLS());
-    getWindSpeed("ru");
-    getLang();
+  refreshLang();
     en.disabled=false;
     ru.disabled=true;
     someflag=true;
-    if(flagfirst==false){
-      getGeolocation();
-    }
-    else{ getGeocoding(localStorage.getItem('lat'),localStorage.getItem('lng'),"ru");}
   }
   function changeLangToEn(){
     flag4=false;
+    langIndex = 0;
     localStorage.setItem('lang', 'en');
-    en.textContent="EN";
-    ru.textContent="RU";
-    // getWeather(tmpType,"en",getCityFromLS());
-    getWindSpeed("en");
-    getLang();
+    refreshLang();
     ru.disabled=false;
     en.disabled=true;
     someflag=true;
-    if(flagfirst==false){
-      getGeolocation();
-    }
-    else{ getGeocoding(localStorage.getItem('lat'),localStorage.getItem('lng'),"en");}
   }
   function FindingDecimalPart(number){
    let ind=0;
@@ -440,8 +435,7 @@ function changeTmptoCelsius(){
    const data = await res.json();
     // getMap(data.results.geometry.lat,data.results.geometry.lng);
     // console.log(data.results.bounds);
-    if(lang=='ru'){
-      if(data.results[0].components.city!=undefined){
+    if(data.results[0].components.city!=undefined){
         locationdiv.textContent=data.results[0].components.city + ", " + data.results[0].components.country;
         localStorage.setItem('city',data.results[0].components.city);
       }else if (data.results[0].components.village!=undefined){
@@ -454,23 +448,6 @@ function changeTmptoCelsius(){
         locationdiv.textContent=data.results[0].components.hamlet + ", " + data.results[0].components.country;
         localStorage.setItem('city',data.results[0].components.hamlet);
       }
-    }
-    if(lang=='en'&&flagfirst==true){
-      if(data.results[0].components.city!=undefined){
-        locationdiv.textContent=data.results[0].components.city + ", " + data.results[0].components.country;
-        localStorage.setItem('city',data.results[0].components.city);
-      }else if (data.results[0].components.village!=undefined){
-        locationdiv.textContent=data.results[0].components.village + ", " + data.results[0].components.country;
-        localStorage.setItem('city',data.results[0].components.village);
-      }else if (data.results[0].components.town!=undefined){
-        locationdiv.textContent=data.results[0].components.town + ", " + data.results[0].components.country;
-        localStorage.setItem('city',data.results[0].components.town);
-      }else if (data.results[0].components.hamlet!=undefined){
-        locationdiv.textContent=data.results[0].components.hamlet + ", " + data.results[0].components.country;
-        localStorage.setItem('city',data.results[0].components.hamlet);
-      }
-
-    }
     if(getTmpType()=="metric"){
       getWeather("metric",getLangFromLS(),getCityFromLS());
     }else{
@@ -480,13 +457,15 @@ function changeTmptoCelsius(){
       getMap(LAT,LNG);
     }
   }
-  
+
+  loadLocalization();
+  setLang();
   getBackgroundImage();
   showTime();
-  getWindSpeed(getLangFromLS());
+  getWindSpeed();
   disableBtn();
   getTypeTmpFromLS();
-  getLang();
+  
   chooseTmpType();
 
   document.addEventListener('DOMContentLoaded', getGeolocation);
