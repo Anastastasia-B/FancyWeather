@@ -343,8 +343,15 @@ function refreshLang(){
   if(flagfirst==false){
       getGeolocation();
     }
-    else{ getGeocoding(localStorage.getItem('lat'),localStorage.getItem('lng'), langStr);}
+    else{
+     getGeocoding(localStorage.getItem('lat'),localStorage.getItem('lng'), langStr);
+   }
+
+  latitude.textContent=mydata.lat[langIndex] + latitude.innerHTML.substring(latitude.innerHTML.indexOf(':'));
+  longtitude.textContent=mydata.long[langIndex] + longtitude.innerHTML.substring(longtitude.innerHTML.indexOf(':'));
+
 }
+
 
 let someflag=false;
 function changeLangToRus(){
@@ -365,6 +372,7 @@ function changeLangToRus(){
     en.disabled=true;
     someflag=true;
   }
+
   function FindingDecimalPart(number){
    let ind=0;
    for(let i=number.length;i>0;i--){
