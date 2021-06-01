@@ -1,0 +1,4 @@
+localizationData = '{"humidity": ["Humidity", "Влажность"], "wind": ["Wind", "Ветер"], "feelslike": ["Feels like", "Ощущается как"], "lat": ["Latitude", "Широта"],	"long": ["Longtitude", "Долгота"],	"ru": ["Ru", "Рус"], "en": ["En", "Англ"],	"search": ["Search", "Поиск"]}';
+
+
+
