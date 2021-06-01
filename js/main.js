@@ -329,15 +329,13 @@ async function getWindSpeed(language) {
   }
 }
 function getMap(lat,lng){
-  mapboxgl.accessToken = 'pk.eyJ1Ijoib2JyaWdhbjRpayIsImEiOiJja29xemMxcXkwMnk5MndvYjZidGtpYW51In0.INEuPlawLEruk-9vwFqZPg';
-  var map = new mapboxgl.Map({
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZmFuZ3VzIiwiYSI6ImNrcDN6cWUycTFmY2gycG13YXV4aGY0eHEifQ.a3Eu2Aj9YHQUeSlYJn2Xiw';
+    var map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/streets-v11', 
     center: [lng, lat], 
-    zoom: 9.5 
-  });
-// console.log(Math.floor(("0."+FindingDecimalPart(lat))*60));
-// console.log(Math.floor(("0."+FindingDecimalPart(lng))*60));
+    zoom: 10
+});
 }
 let someflag=false;
 function changeLangToRus(){

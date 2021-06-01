@@ -33,3 +33,9 @@ body{
 .tmp_number{
 	font-size: 2em;
 }
+
+#map{
+  border-radius: 20px;
+  height: 300px;
+  width: 400px;
+}
