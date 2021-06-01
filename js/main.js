@@ -125,9 +125,10 @@ function viewBgImage(src) {
     body.style.backgroundImage = `url(${src})`;
   }; 
 }
-function LoadImage(body,src) {  
+function LoadWeatherIcon(body,src) {  
   const img = new Image();
   img.src = src;
+  img.classList.add('weather_icon');
   img.onload = () => {      
     body.appendChild(img);
   }; 
@@ -163,19 +164,19 @@ function fetchForecast (typeTmp,lat,lon) {
         var temp = value.temp.day.toFixed(0);
         if(index==1){
           if(flag==false){
-            LoadImage(firstDayIcon,`https://openweathermap.org/img/wn/${icon}.png`);
+            LoadWeatherIcon(firstDayIcon,`https://openweathermap.org/img/wn/${icon}.png`);
           }
           firstDayTmp.textContent=temp + "°";
         }
         else if(index==2){
           if(flag==false){
-            LoadImage(secondDayIcon,`https://openweathermap.org/img/wn/${icon}.png`);
+            LoadWeatherIcon(secondDayIcon,`https://openweathermap.org/img/wn/${icon}.png`);
           }
           secondDayTmp.textContent=temp+ "°";
         }
         else if(index==3){
           if(flag==false){
-            LoadImage(thirdDayIcon,`https://openweathermap.org/img/wn/${icon}.png`);
+            LoadWeatherIcon(thirdDayIcon,`https://openweathermap.org/img/wn/${icon}.png`);
             flag=true;
           }
           thirdDayTmp.textContent=temp+ "°";
@@ -263,8 +264,7 @@ async function getWeather(typeTmp,language,city) {
     }
     localStorage.setItem('city',data.name);
     flag5=false;
-    weatherIcon.className = 'weather-icon owf';
-    weatherIcon.classList.add(`owf-${data.weather[0].id}`);
+    LoadWeatherIcon(weatherIcon,`https://openweathermap.org/img/wn/${data.weather[0].icon}.png`);
     // console.log(Math.round(data.main.temp));
     let maintmpRound=Math.round(data.main.temp);
     weathertype.textContent=data.weather[0].description;
@@ -278,7 +278,7 @@ async function getWeather(typeTmp,language,city) {
       }
     }
     else {
-      feelslike.textContent="ЧУВСТВУЕТСЯ КАК: " + feelsliketmpRound + "°";
+      feelslike.textContent="Ощущается как: " + feelsliketmpRound + "°";
       if(flag4==false){
         humidity.textContent="ВЛАЖНОСТЬ: "+data.main.humidity + "%";
         flag4=true;
@@ -299,7 +299,7 @@ async function getWeather(typeTmp,language,city) {
       const res = await fetch(url);
       const data = await res.json();
       localStorage.setItem('city',city);
-      fetchForecast (typeTmp,String(data.coord.lat),String(data.coord.lon)) ;
+      fetchForecast(typeTmp,String(data.coord.lat),String(data.coord.lon)) ;
       getWeather(typeTmp,getLangFromLS(),city);
     }catch(error){
     alert("City not found");
@@ -334,7 +334,7 @@ function getMap(lat,lng){
     container: 'map',
     style: 'mapbox://styles/mapbox/streets-v11', 
     center: [lng, lat], 
-    zoom: 10
+    zoom: 10.2
 });
 }
 let someflag=false;
